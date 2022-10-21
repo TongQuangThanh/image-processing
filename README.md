@@ -34,12 +34,3 @@ Welcome
 #### Example 
 http://localhost:3080/api/images?filename=fjord&width=200&height=200
 Successfully
-
-### Notes
-
-- Images are served from `assets/images/full`. Further images with the extension
-  can be put into that directory, but the filetype is not checked
-  (not required in exercise).
-- Image thumbs will be stored in `assets/images/thumb` and can be deleted from
-  there to verify that in that case they will be re-created on subsequent calls
-  to the same endpoint.
