@@ -32,5 +32,5 @@ http://localhost:3080
 Welcome 
 
 #### Example 
-http://localhost:3080/api/images?filename=fjord&width=200&height=200
+http://localhost:3080/api/image?filename=fjord&width=200&height=200
 Successfully

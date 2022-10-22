@@ -6,7 +6,7 @@ export const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use((req, res, next) => {
+app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader(
     'Access-Control-Allow-Headers',
@@ -19,25 +19,18 @@ app.use((req, res, next) => {
   next();
 });
 
-const normalizePort = (val: string) => {
-  const port = parseInt(val, 10);
-  if (isNaN(port)) return val;
-  if (port >= 0) return port;
-  return false;
-};
-
-const port = normalizePort(process.env.PORT || '3080');
+const port = 3080;
 app.set('port', port);
 const server = http.createServer(app);
 
-app.get('/', (req, res) => {
+app.get('/', (req: express.Request, res: express.Response): void => {
   res.send(
-    'Welcome!!! Type image name and image width, height in url to get resized image (default width, height iss 200px)'
+    'Welcome!!! Type image name and image width, height in url to get resized image (default width, height is 200px)'
   );
 });
 app.use('/api/image', imageRouters);
 
-server.listen(port, async () => {
+server.listen(port, async (): Promise<void> => {
   console.log(
     `[server]: Server is running on port ${port}, current time: `,
     new Date()

@@ -1,11 +1,7 @@
 import express from 'express';
-import sharp from 'sharp';
-import { promises as fs } from 'fs';
 import path from 'path';
+import { existingFullFile, isExistingThumb, resizeImage, thumbFolder } from '../utils/image-processing';
 export const imageRouters = express.Router();
-
-const thumbFolder = 'image/thumb/';
-const fullFolder = 'image/full/';
 
 imageRouters.get('/', async (req, res) => {
   const defaultSize = 0;
@@ -30,22 +26,13 @@ imageRouters.get('/', async (req, res) => {
   let errorMessage = '';
   if (name) {
     try {
-      const thumbFiles = await fs.readdir(thumbFolder);
       const filePath = `${thumbFolder}${name}&width=${width}&height=${height}.png`;
-      const existingThumb = thumbFiles.find(
-        f =>
-          f.includes(name) &&
-          f.includes(width.toString()) &&
-          f.includes(height.toString())
-      );
-      if (existingThumb) {
+      if (await isExistingThumb(name, width, height)) {
         result = filePath;
       } else {
-        const fullFiles = await fs.readdir(fullFolder);
-        const existingFile = fullFiles.find(f => f.includes(name));
+        const existingFile = await existingFullFile(name);
         if (existingFile) {
-          const file = await fs.readFile(`${fullFolder}${existingFile}`);
-          await sharp(file).resize(width, height).toFile(filePath);
+          await resizeImage(existingFile, width, height, filePath);
           result = filePath;
         } else {
           errorMessage = 'File not found, please input another one';

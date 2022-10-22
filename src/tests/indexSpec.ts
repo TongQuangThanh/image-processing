@@ -1,7 +1,13 @@
+import path from 'path';
+import { promises as fs } from 'fs';
 import supertest from 'supertest';
 import { app } from '../index';
+import { thumbFolder } from '../utils/image-processing';
 
 const request = supertest(app);
+const name = 'fjord.jpg';
+const width = 199;
+const height = 199;
 
 describe('Test responses from endpoints', (): void => {
   describe('endpoint: /', (): void => {
@@ -23,7 +29,7 @@ describe('Test responses from endpoints', (): void => {
 
     it('gets /api/image?filename=fjord&width=199&height=199 (valid args)', async (): Promise<void> => {
       const response: supertest.Response = await request.get(
-        '/api/image?filename=fjord&width=199&height=199'
+        `/api/image?filename=fjord&width=${width}&height=${height}`
       );
 
       expect(response.status).toBe(200);
@@ -59,4 +65,17 @@ describe('Test responses from endpoints', (): void => {
       expect(response.status).toBe(404);
     });
   });
+});
+
+// Erase test file. Test should not run on productive system to avoid cache loss
+afterAll(async (): Promise<void> => {
+  const filePath = `${thumbFolder}${name}&width=${width}&height=${height}.png`;
+  const resizedImagePath: string = path.resolve(filePath);
+
+  try {
+    await fs.access(resizedImagePath);
+    fs.unlink(resizedImagePath);
+  } catch {
+    // intentionally left blank
+  }
 });
