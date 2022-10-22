@@ -3,7 +3,7 @@ import path from 'path';
 import { existingFullFile, isExistingThumb, resizeImage, thumbFolder } from '../utils/image-processing';
 export const imageRouters = express.Router();
 
-imageRouters.get('/', async (req, res) => {
+imageRouters.get('/', async (req: express.Request, res: express.Response): void => {
   const defaultSize = 0;
   const name = req.query.filename?.toString();
   let width = defaultSize;
